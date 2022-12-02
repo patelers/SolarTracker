@@ -1,30 +1,63 @@
- int light, analogLight;
-  void setup() {
+float light, analogLight, light2, analogLight2, light3, analogLight3, light4, analogLight4;
+void setup() {
   // put your setup code here, to run once:
-  pinMode (13, OUTPUT); // Led is connected to pin 13
+ // pinMode (13, OUTPUT); // Led is connected to pin 13
   Serial.begin(9600);
-  }
+}
 
-  void loop() {
+void loop() {
   // put your main code here, to run repeatedly:
   light = analogRead(A0); //will gain an ADC value from this function: between 0 and 1023
-  Serial.print("Digital value (ADC): ");
+  Serial.print("Analog value (ADC): ");
   Serial.print(light);
-  delay(100);
-  analogLight = light * 4.887 ; // ADC * Step size * 10^-3
-  Serial.print(" , Analog Input voltage: ");
+  delay(500);
+  analogLight = light * (5.0 / 1023) ; // ADC
+  Serial.print(" ,Digital Output voltage: ");
   Serial.print(analogLight);
-  Serial.println(" mV");
+  Serial.println(" V");
 
-  if (light < 40) {  //if value of LDR is less than 40 then LED turns on
-    digitalWrite(13, HIGH);
-  }
-  else {
-    digitalWrite(13, LOW);
-  }
-  Serial.println(light);
-  delay(100);
-  }
+  light2 = analogRead(A1); //will gain an ADC value from this function: between 0 and 1023
+  Serial.print("Analog value2 (ADC): ");
+  Serial.print(light2);
+  delay(500);
+  analogLight2 = light2 * (5.0 / 1023) ; // ADC 
+  Serial.print(" , Digital Output voltage2: ");
+  Serial.print(analogLight2);
+  Serial.println(" V");
+
+ light3 = analogRead(A2); //will gain an ADC value from this function: between 0 and 1023
+  Serial.print("Analog value3 (ADC): ");
+  Serial.print(light3);
+  delay(500);
+  analogLight3 = light3 * (5.0 / 1023) ; // ADC 
+  Serial.print(" ,  Digital Output voltage3: ");
+  Serial.print(analogLight3);
+  Serial.println(" V");
+
+ light4 = analogRead(A3); //will gain an ADC value from this function: between 0 and 1023
+  Serial.print("Analog value4 (ADC): ");
+  Serial.print(light4);
+  delay(500);
+  analogLight4 = light4 * (5.0 / 1023) ; // ADC 
+  Serial.print(" ,   Digital Output voltage4: ");
+  Serial.print(analogLight4);
+  Serial.println(" V");
+
+
+
+
+}
+
+
+//  if (light < 40) {  //if value of LDR is less than 40 then LED turns on
+//    digitalWrite(13, HIGH);
+//  }
+//  else {
+//    digitalWrite(13, LOW);
+//  }
+//  Serial.println(light);
+//  delay(100);
+//  }
 
 
 
