@@ -226,7 +226,7 @@ void manualsolartracker() {
   buttonState2 = digitalRead(5);
   Serial.println(buttonState2);
   Serial.print("buttonState2");
-  
+
   if (buttonState2 != prevButtonState2) {
     if (buttonState2   == HIGH) {
       //Change mode and ligh up the correct indicator
@@ -238,11 +238,11 @@ void manualsolartracker() {
     }
   }
 
-prevButtonState2 = buttonState2;
-delay(100); // Wait for 50   millisecond(s)
-if (axe == 0) {     //control right-left movement
-  servo_rightleft.write(map(analogRead(A0),   0, 1023, 0, 130));
-} else { // //control up-down movement
-  servo_updown.write(map(analogRead(A0),   0, 1023, 0, 130));
-}
+  prevButtonState2 = buttonState2;
+  delay(100); // Wait for 100   millisecond(s)
+  if (axe == 0) {     //control right-left movement
+    servo_rightleft.write(map(analogRead(A0),   0, 1023, 0, 130));
+  } else { // //control up-down movement
+    servo_updown.write(map(analogRead(A0),   0, 1023, 0, 130));
+  }
 }
