@@ -22,15 +22,15 @@ int topr, topl, botr, botl; //declare variables needed to find averages
 //Declare two servos
 Servo servo_updown; //servo_z Variable declared used to control servo using PWM
 int servo_updown_y = 0; //variable to store current position of servo
-int servo_updown_y_limitHigh = 100; // set max position of servo
-int servo_updown_y_limitLow = 10; // set minimum position of servo
+int servo_updown_y_limitHigh = 170; // set max position of servo 170
+int servo_updown_y_limitLow = 10; // set minimum position of servo 10
 
 Servo servo_rightleft; //servo_x
 int servo_rightleft_x = 0; //variable to store current position of servo
-int servo_rightleft_x_limitHigh = 170; // set max position of servo
-int servo_rightleft_x_limitLow = 10; // set minimum position of servo
+int servo_rightleft_x_limitHigh = 170; // set max position of servo 170
+int servo_rightleft_x_limitLow = 10; // set minimum position of servo 10
 
-int   threshold_value = 10; //measurement sensitivity
+int   threshold_value = 15; //measurement sensitivity
 
 void setup()
 {
@@ -82,17 +82,18 @@ void loop()
   delay(100); // Wait for 50 millisecond(s)
 
   if (mode == 0) {
-    Mode = 'M';
+    Mode = 'Manual';
     Serial.println(Mode);   //send Mode "Manual" to serial port
     manualsolartracker(); //execute manual tracking function
   } else { // mode automatic
-    Mode = 'A';
+    Mode = 'Automatic';
     Serial.println(Mode); //send Mode "Manual" to serial port
     automaticsolartracker(); //send Mode "Automatic" to serial port
   }
 
 }
 
+/////////////////////////////////////////////////////////////////////////////////
 void automaticsolartracker() {
 
   ////// capturing analog values of each LDR
@@ -102,9 +103,14 @@ void automaticsolartracker() {
   botl = analogRead(ldrbotl);   //capturing analog value of bot left LDR
 
   // servoh = servo_x.read();
-  servo_updown_y = servo_updown.read();
+  servo_updown_y = servo_updown.read(); // read the current positions of vertical and horizontal servos
+  Serial.print("servo_updown_y: ");
+  Serial.println(servo_updown_y);
+  
   // servov = servo_z.read();
-  servo_rightleft_x = servo_rightleft.read();
+  servo_rightleft_x = servo_rightleft.read(); // and store them as variables, allows to keep track of position 
+  Serial.print("servo_rightleft_x: ");
+  Serial.print(servo_rightleft_x);
 
   ///// calculating average
   int avgtop = (topr + topl) / 2;     //average   of top LDRs
@@ -122,79 +128,82 @@ void automaticsolartracker() {
 
   ///// Get the difference
   int diffelev = avgtop - avgbot;      //Get the different average between LDRs top and LDRs bot
+  Serial.print("diffelev: ");
   Serial.println(diffelev);
   int diffazi = avgleft - avgright;    //Get the different average betwen LDRs right and LDRs left
+   Serial.print("diffazi: ");
   Serial.println(diffazi);
-  ////////////////////////////////////////////////
 
-  ////// horizontl axis tracking
-  if (abs(diffelev) <= threshold_value)
+
+  ///////// horizontl axis tracking
+  if (abs(diffelev) <= threshold_value) // check if the diffrence is less than the set required value
   {
-    servo_updown.write(servo_updown_y); //stop the updown servo
+    servo_updown.write(servo_updown_y); //stop the updown servo if above statement true
   } else  {
-    if   (diffelev > threshold_value)
+    if   (diffelev > threshold_value) // if the difference is more then rotate vertical servo
     { Serial.println(" x -   2 ");
-      servo_updown.write(servo_updown_y  - 2); /////clockwise rotation
-      if ( servo_updown_y > servo_updown_y_limitHigh)
+      servo_updown.write(servo_updown_y  - 2); // clockwise rotation by 2 deg
+      if ( servo_updown_y > servo_updown_y_limitHigh) // check if new position now exceeds a defined limit
       {
-        servo_updown_y = servo_updown_y_limitHigh;
+        servo_updown_y = servo_updown_y_limitHigh; // if true then set the servo at the max position no more rotation
       }
       delay(10);
     } else {
-      servo_updown.write(servo_updown_y   + 2);
+      servo_updown.write(servo_updown_y   + 2); // else increment position CCW rotation 2 deg
       if ( servo_updown_y < servo_updown_y_limitLow)
       {
-        servo_updown_y = servo_updown_y_limitLow;
+        servo_updown_y = servo_updown_y_limitLow; // if true then set the servo at the min position no more rotation
       }
       delay(10);
     }
   }
-  //////////////////////////////////////////////
-  //tracking according to vertical axis
-  if (abs(diffazi) <= threshold_value)
+
+  ///////tracking according to vertical axis
+  if (abs(diffazi) <= threshold_value) // check if the diffrence is less than the set required value
   {
-    servo_rightleft.write(servo_rightleft_x); //stop the updown servo
+    servo_rightleft.write(servo_rightleft_x); //stop the horizontal servo if above statement true
   } else  {
-    if   (diffazi > threshold_value)
+    if   (diffazi > threshold_value) // if the difference is more then rotate horizontal servo
     {
-      servo_rightleft.write(servo_rightleft_x  - 2); /////clockwise rotation
-      if ( servo_rightleft_x > servo_rightleft_x_limitHigh)
+      servo_rightleft.write(servo_rightleft_x  - 2); // clockwise rotation by 2 deg
+      if ( servo_rightleft_x > servo_rightleft_x_limitHigh) // check if new position now exceeds a defined limit
       {
-        servo_rightleft_x = servo_rightleft_x_limitHigh;
+        servo_rightleft_x = servo_rightleft_x_limitHigh; // if true then set horizontal servo at the max position no more rotation
       }
       delay(10);
     } else {
-      servo_rightleft.write(servo_rightleft_x   + 2);
-      if ( servo_updown_y < servo_updown_y_limitLow)
+      servo_rightleft.write(servo_rightleft_x   + 2); // increment position of servo by 2 deg, take current position + 2 (CW) then writes new position 
+      if ( servo_updown_y < servo_updown_y_limitLow) 
       {
-        servo_rightleft_x = servo_rightleft_x_limitLow;
+        servo_rightleft_x = servo_rightleft_x_limitLow; // if true then set the servo at the min position no more rotation
       }
       delay(10);
     }
   }
 }
-///////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
 void manualsolartracker() {
-  buttonState2 = digitalRead(5);
-  Serial.println(buttonState2);
-  Serial.print("buttonState2");
+  buttonState2 = digitalRead(5); // initially given 0 = read pin 5 to be 0 (off) and 1 (on)
+  Serial.print("buttonState2: ");
+  Serial.println(buttonState2); 
 
-  if (buttonState2 != prevButtonState2) {
-    if (buttonState2   == HIGH) {
-      //Change mode and ligh up the correct indicator
-      if   (axe == 1) {
-        axe = 0;
+  if (buttonState2 != prevButtonState2) { //if button state2 is different from previous button state2 value then button has changed state
+    if (buttonState2   == HIGH) { //if button state is 1 check axis value
+      if   (axe == 1) { //if axis equals to 1 then it sets axis to 0
+        axe = 0; // indicates button clicked and change axis control 
       } else {
         axe = 1;
       }
     }
   }
-
-  prevButtonState2 = buttonState2;
-  delay(100); // Wait for 100   millisecond(s)
-  if (axe == 0) {     //control right-left movement
-    servo_rightleft.write(map(analogRead(A0),   0, 1023, 0, 130));
-  } else { // //control up-down movement
-    servo_updown.write(map(analogRead(A0),   0, 1023, 0, 130));
+  
+  prevButtonState2 = buttonState2; // new button state updated 
+  delay(100); // Wait for 100 milliseconds
+  
+  if (axe == 0) {     //control horizontal movement
+    servo_rightleft.write(map(analogRead(A0),   0, 1023, 0, 130)); // potentiometer control 
+  } else { // //control vertical movement
+    servo_updown.write(map(analogRead(A0),   0, 1023, 0, 130)); // potentiometer control
   }
 }
+/////////////////////////////////////////////////////////////////////
