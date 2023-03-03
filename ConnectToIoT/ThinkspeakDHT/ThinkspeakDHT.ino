@@ -43,85 +43,90 @@ void setup() {
 
 void loop() {
 
-  String getData = "GET /update?api_key=" + API + "&field1=" + getTemperatureValue() + "&field2=" + getHumidityValue();
+  String getData = "GET /update?api_key=" + API + "&field1=" + getTemperatureValue() + "&field2=" + getHumidityValue(); // can add more fields to server: + "field3=" + function()
   sendCommand("AT+CIPMUX=1", 5, "OK");
   sendCommand("AT+CIPSTART=0,\"TCP\",\"" + HOST + "\"," + PORT, 15, "OK");
   sendCommand("AT+CIPSEND=0," + String(getData.length() + 4), 4, ">");
   esp8266.println(getData); delay(1500); countTrueCommand++;
   sendCommand("AT+CIPCLOSE=0", 5, "OK");
-  
-/////////////
-//  String getData = "GET /update?api_key="+ API +"&"+ field +"="+String(valSensor);
-//switch(countTrueCommand) {
-//
-//case 0: sendCommand("AT",5,"OK");break;
-//case 1: sendCommand("AT+RST",10,"invalid");break;
-//case 2: sendCommand("AT+CIPMUX=1",5,"OK"); break;
-//case 3: sendCommand("AT+CIPSTART=0,"TCP","+ HOST +","+ PORT,15,"OK"); break;
-//case 4: sendCommand("AT+CIPSEND=0," +String(getData.length()+4),4,">"); break;
-//case 5: esp8266.println(getData);delay(1500);countTrueCommand++; break;
-//case 6: sendCommand("AT+CIPCLOSE=0",5,"OK"); break;
-//case 7:
-//
-//Serial.println(valSensor);
-//Serial.print(getData);
-//Serial.print(",");
-//Serial.println(getData.length());
-//valSensor = random(100000); // random value, change with sensor value if using sensor
-//countTrueCommand = 0;
-//delay(10000);
-//break;
-//}
-/////////////
-
-String getTemperatureValue() {
-
-  float temperature = dht.readTemperature();
-  Serial.print(" Temperature(C)= ");
-  Serial.println(temperature);
-  return String(temperature);
 
 }
 
-String getHumidityValue() {
+  /////////////
+  //  String getData = "GET /update?api_key="+ API +"&"+ field +"="+String(valSensor);
+  //switch(countTrueCommand) {
+  //
+  //case 0: sendCommand("AT",5,"OK");break;
+  //case 1: sendCommand("AT+RST",10,"invalid");break;
+  //case 2: sendCommand("AT+CIPMUX=1",5,"OK"); break;
+  //case 3: sendCommand("AT+CIPSTART=0,"TCP","+ HOST +","+ PORT,15,"OK"); break;
+  //case 4: sendCommand("AT+CIPSEND=0," +String(getData.length()+4),4,">"); break;
+  //case 5: esp8266.println(getData);delay(1500);countTrueCommand++; break;
+  //case 6: sendCommand("AT+CIPCLOSE=0",5,"OK"); break;
+  //case 7:
+  //
+  //Serial.println(valSensor);
+  //Serial.print(getData);
+  //Serial.print(",");
+  //Serial.println(getData.length());
+  //valSensor = random(100000); // random value, change with sensor value if using sensor
+  //countTrueCommand = 0;
+  //delay(10000);
+  //break;
+  //}
+  /////////////
 
-  float humidity = dht.readHumidity();
-  Serial.print(" Humidity in %= ");
-  Serial.println(humidity);
-  return String(humidity);
+// functions 
+  String getTemperatureValue() {
 
-}
+    float temperature = dht.readTemperature();
+    Serial.print(" Temperature(C)= ");
+    Serial.println(temperature);
+    delay(50);
+    return String(temperature);
 
-void sendCommand(String command, int maxTime, char readReplay[]) {
-  Serial.print(countTrueCommand);
-  Serial.print(". at command => ");
-  Serial.print(command);
-  Serial.print(" ");
-  while (countTimeCommand < (maxTime * 1))
-  {
-    esp8266.println(command);//at+cipsend
-    if (esp8266.find(readReplay)) //ok
+  }
+
+  String getHumidityValue() {
+
+    float humidity = dht.readHumidity();
+    Serial.print(" Humidity in %= ");
+    Serial.println(humidity);
+    delay(50);
+    return String(humidity);
+
+  }
+
+  void sendCommand(String command, int maxTime, char readReplay[]) {
+    Serial.print(countTrueCommand);
+    Serial.print(". at command => ");
+    Serial.print(command);
+    Serial.print(" ");
+    while (countTimeCommand < (maxTime * 1))
     {
-      found = true;
-      break;
+      esp8266.println(command);//at+cipsend
+      if (esp8266.find(readReplay)) //ok
+      {
+        found = true;
+        break;
+      }
+
+      countTimeCommand++;
     }
 
-    countTimeCommand++;
-  }
+    if (found == true)
+    {
+      Serial.println("OYI");
+      countTrueCommand++;
+      countTimeCommand = 0;
+    }
 
-  if (found == true)
-  {
-    Serial.println("OYI");
-    countTrueCommand++;
-    countTimeCommand = 0;
-  }
+    if (found == false)
+    {
+      Serial.println("Fail");
+      countTrueCommand = 0;
+      countTimeCommand = 0;
+    }
 
-  if (found == false)
-  {
-    Serial.println("Fail");
-    countTrueCommand = 0;
-    countTimeCommand = 0;
+    found = false;
   }
-
-  found = false;
-}

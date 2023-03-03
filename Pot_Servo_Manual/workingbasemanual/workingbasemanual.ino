@@ -1,4 +1,6 @@
-#include <Servo.h> //import library 
+#include <Servo.h>
+
+//#include <Servo.h> //import library 
 
 Servo myservo;   // create servo object to control a servo
 int potPin = A0;  // analog pin used to connect potentiometer
