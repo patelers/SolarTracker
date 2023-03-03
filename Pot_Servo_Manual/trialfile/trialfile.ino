@@ -150,14 +150,14 @@ void automaticsolartracker() {
       {
         servo_updown_y = servo_updown_y_limitHigh; // if true then set the servo at the max position no more rotation
       }
-      delay(30); //10
+      delay(10); //10
     } else {
       servo_updown.write(servo_updown_y   + 2); // else increment position CCW rotation 2 deg
       if ( servo_updown_y < servo_updown_y_limitLow)
       {
         servo_updown_y = servo_updown_y_limitLow; // if true then set the servo at the min position no more rotation
       }
-      delay(30);//10
+      delay(10);//10
     }
   }
 
