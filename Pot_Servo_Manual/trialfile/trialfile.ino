@@ -45,6 +45,9 @@ void setup()
   servo_updown.attach(8);  // pin 8 used to control angle and position of servo
   servo_rightleft.attach(9); // pin 9 used to control angle and position of servo
 
+  servo_updown.write(5); //set the initial positions of vertical servo
+  servo_rightleft.write(10); ////set the initial positions of horizontal servo
+
 }
 void loop()
 {
@@ -82,12 +85,12 @@ void loop()
   delay(100); // Wait for 50 millisecond(s)
 
   if (mode == 0) {
-    Mode = 'Manual';
-    Serial.println(Mode);   //send Mode "Manual" to serial port
+    Mode = 'M';
+    Serial.println(Mode);   //send Mode "M" to serial port
     manualsolartracker(); //execute manual tracking function
   } else { // mode automatic
-    Mode = 'Automatic';
-    Serial.println(Mode); //send Mode "Manual" to serial port
+    Mode = 'A';
+    Serial.println(Mode); //send Mode "A" to serial port
     automaticsolartracker(); //send Mode "Automatic" to serial port
   }
 
@@ -147,14 +150,14 @@ void automaticsolartracker() {
       {
         servo_updown_y = servo_updown_y_limitHigh; // if true then set the servo at the max position no more rotation
       }
-      delay(10);
+      delay(30); //10
     } else {
       servo_updown.write(servo_updown_y   + 2); // else increment position CCW rotation 2 deg
       if ( servo_updown_y < servo_updown_y_limitLow)
       {
         servo_updown_y = servo_updown_y_limitLow; // if true then set the servo at the min position no more rotation
       }
-      delay(10);
+      delay(30);//10
     }
   }
 
