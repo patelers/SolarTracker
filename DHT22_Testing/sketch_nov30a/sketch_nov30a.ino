@@ -1,4 +1,3 @@
-//#include <DHT.h>
 //#include <DHT_U.h>
 
 //#include <ESP8266WiFi.h>
@@ -6,12 +5,13 @@
 //#include <ESP8266HTTPClient.h>
 //#include <Adafruit_Sensor.h>
 
+//#include <DHT.h>
+#include "DHT.h"
 
 #include <SoftwareSerial.h> // library allows communication between mega board and other devices (esp8266)
-#include <DHT.h>;
-//#include "DHT.h"
 #define RX 2  //digital pins defined for communication with ESP8266 2
 #define TX 3  // corresponding RX and TX pins from ESP8266  3
+#include <ESP8266.h>
 
 //#define ESP8266_RST_PIN    2
 
@@ -37,7 +37,7 @@ SoftwareSerial esp8266(RX, TX); // digital (output) pin used to allow serial com
 
 void setup() {
   Serial.begin(9600); //serial monitor
-  dht.begin(); //start the sensor
+ // DHT.begin(); //start the sensor
   esp8266.begin(115200); //start the esp8266 module
   sendCommand("AT", 5, "OK");
   sendCommand("AT+CWMODE=1", 5, "OK");

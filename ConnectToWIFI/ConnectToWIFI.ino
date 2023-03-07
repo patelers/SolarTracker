@@ -1,3 +1,5 @@
+#include <ESP8266.h>
+
 #include <SoftwareSerial.h>
 
 SoftwareSerial ESPserial(2, 3); // RX | TX
@@ -28,7 +30,7 @@ void loop()
   if ( ESPserial.available() ) {
     Serial.write( ESPserial.read() );
   }
-  
+
   // listen for user input and send it to the ESP8266
   if ( Serial.available() ) {
     ESPserial.write( Serial.read() );
@@ -37,3 +39,4 @@ void loop()
 }
 
 // module connects to the hotspot of mobile
+// MAY DELETE

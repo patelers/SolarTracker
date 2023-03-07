@@ -1,4 +1,4 @@
-#include <ThingSpeak.h>
+//#include <ThingSpeak.h>
 #include <SoftwareSerial.h>
 #include <ESP8266.h>
 #include <DHT.h>;
@@ -34,7 +34,7 @@ void setup() {
 
   Serial.begin(9600);
   dht.begin();
-  esp8266.begin(115200);
+  esp8266.begin(9600);//115000
   sendCommand("AT", 5, "OK");
   sendCommand("AT+CWMODE=1", 5, "OK");
   sendCommand("AT+CWJAP=\"" + AP + "\",\"" + PASS + "\"", 20, "OK");
